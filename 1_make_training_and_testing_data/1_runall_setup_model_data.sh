@@ -16,15 +16,12 @@ ROOT=$1  # root directory for project (same across all scripts)
 # One script is a special exception -- we need to create some repeat files
 # for the human genome only, and the script needs an all.all file (produced by
 # previous steps) to do it. So we can pick any TF's file to pass in.
-random_tf="CTCF"  # this can be any TF you've got an all.all file for
-allall_file="$ROOT/raw_data/hg38/${random_tf}/all.all"
 
 # the script 1.4_make_noSINE_files_for_epochs.sh below requires the files made by
-# this script
-./1.0_make_repeat_files.sh "$ROOT" "$allall_file"
-
 
 for tf in "${tfs[@]}"; do
+	allall_file="$ROOT/raw_data/hg38/${tf}/all.all"
+	./1.0_make_repeat_files.sh "$ROOT" "$allall_file"
 	for genome in "${genomes[@]}"; do
 		echo "Setting up training data for ${tf} + ${genome}..."
 		./1.1_make_val_test_files_and_prep_training_files.sh "$ROOT" "$tf" "$genome"  || exit 1
